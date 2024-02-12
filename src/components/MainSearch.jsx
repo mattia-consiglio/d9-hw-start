@@ -1,14 +1,17 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Container, Row, Col, Form, Button } from 'react-bootstrap'
 import Job from './Job'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { IoStar } from 'react-icons/io5'
+import { useSelector, useDispatch } from 'react-redux'
 
 const MainSearch = () => {
 	const [query, setQuery] = useState('')
 	const [jobs, setJobs] = useState([])
+	const savedSearch = useSelector(state => state.search.query)
 
 	const navigate = useNavigate()
+	const dispatch = useDispatch()
 
 	const baseEndpoint = 'https://strive-benchmark.herokuapp.com/api/jobs?search='
 
@@ -16,9 +19,7 @@ const MainSearch = () => {
 		setQuery(e.target.value)
 	}
 
-	const handleSubmit = async e => {
-		e.preventDefault()
-
+	const fetchData = async () => {
 		try {
 			const response = await fetch(baseEndpoint + query + '&limit=20')
 			if (response.ok) {
@@ -31,6 +32,19 @@ const MainSearch = () => {
 			console.log(error)
 		}
 	}
+
+	const handleSubmit = async e => {
+		e.preventDefault()
+		fetchData()
+		dispatch({ type: 'SET_SEARCH_QUERY', payload: query })
+	}
+
+	useEffect(() => {
+		if (savedSearch) {
+			setQuery(savedSearch)
+			fetchData()
+		}
+	}, [])
 
 	return (
 		<Container>

@@ -2,8 +2,11 @@ const initialState = {
 	favourites: {
 		items: [],
 	},
+	search: {
+		query: '',
+	},
 }
-const favouritesReducer = (state = initialState, action) => {
+const indexReducer = (state = initialState, action) => {
 	switch (action.type) {
 		case 'ADD_FAVOURITE':
 			return {
@@ -21,9 +24,17 @@ const favouritesReducer = (state = initialState, action) => {
 					items: state.favourites.items.filter(item => item !== action.payload),
 				},
 			}
+		case 'SET_SEARCH_QUERY':
+			return {
+				...state,
+				search: {
+					...state.search,
+					query: action.payload,
+				},
+			}
 		default:
 			return state
 	}
 }
 
-export default favouritesReducer
+export default indexReducer
