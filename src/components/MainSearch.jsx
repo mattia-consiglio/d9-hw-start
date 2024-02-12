@@ -34,22 +34,23 @@ const MainSearch = () => {
 
 	return (
 		<Container>
-			<Row>
+			<Row className='align-items-center'>
 				<Col xs={10} className='mx-auto my-3'>
 					<h1 className='display-1'>Remote Jobs Search</h1>
 				</Col>
-				<Col xs={2} className='my-3'>
-					<h1>
-						<Button
-							variant='warning'
-							onClick={() => {
-								navigate('/favourites')
-							}}
-						>
-							<IoStar />
-						</Button>
-					</h1>
+				<Col xs={2} className='my-3 d-flex justify-content-end'>
+					<Button
+						variant='warning'
+						size='lg'
+						onClick={() => {
+							navigate('/favourites')
+						}}
+					>
+						<IoStar />
+					</Button>
 				</Col>
+			</Row>
+			<Row className='justify-content-center'>
 				<Col xs={10} className='mx-auto'>
 					<Form onSubmit={handleSubmit}>
 						<Form.Control
