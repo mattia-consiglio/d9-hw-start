@@ -2,6 +2,7 @@ import { Row, Col, Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { IoStarOutline, IoStar } from 'react-icons/io5'
 import { useSelector, useDispatch } from 'react-redux'
+import { addFavouriteAction, removeFavouriteAction } from '../redux/actions'
 
 const Job = ({ data, showFavourites = true }) => {
 	const favourites = useSelector(state => state.favourites.items)
@@ -16,8 +17,8 @@ const Job = ({ data, showFavourites = true }) => {
 						className='me-3'
 						onClick={() => {
 							isFavourite
-								? dispatch({ type: 'REMOVE_FAVOURITE', payload: data.company_name })
-								: dispatch({ type: 'ADD_FAVOURITE', payload: data.company_name })
+								? dispatch(removeFavouriteAction(data.company_name))
+								: dispatch(addFavouriteAction(data.company_name))
 						}}
 					>
 						{isFavourite ? <IoStar /> : <IoStarOutline />}

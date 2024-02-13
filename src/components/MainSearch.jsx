@@ -1,49 +1,32 @@
 import { useEffect, useState } from 'react'
-import { Container, Row, Col, Form, Button } from 'react-bootstrap'
+import { Container, Row, Col, Form, Button, Spinner, Alert } from 'react-bootstrap'
 import Job from './Job'
 import { useNavigate } from 'react-router-dom'
 import { IoStar } from 'react-icons/io5'
 import { useSelector, useDispatch } from 'react-redux'
+import { setSearchQueryAction } from '../redux/actions'
 
 const MainSearch = () => {
 	const [query, setQuery] = useState('')
-	const [jobs, setJobs] = useState([])
-	const savedSearch = useSelector(state => state.search.query)
+	const jobs = useSelector(state => state.search.results)
+	const queryState = useSelector(state => state.search.query)
+	const { isLoading, error } = useSelector(state => state.search)
 
 	const navigate = useNavigate()
 	const dispatch = useDispatch()
-
-	const baseEndpoint = 'https://strive-benchmark.herokuapp.com/api/jobs?search='
 
 	const handleChange = e => {
 		setQuery(e.target.value)
 	}
 
-	const fetchData = async () => {
-		try {
-			const response = await fetch(baseEndpoint + query + '&limit=20')
-			if (response.ok) {
-				const { data } = await response.json()
-				setJobs(data)
-			} else {
-				alert('Error fetching results')
-			}
-		} catch (error) {
-			console.log(error)
-		}
-	}
-
 	const handleSubmit = async e => {
 		e.preventDefault()
-		fetchData()
-		dispatch({ type: 'SET_SEARCH_QUERY', payload: query })
+		dispatch(setSearchQueryAction(query))
 	}
 
 	useEffect(() => {
-		if (savedSearch) {
-			setQuery(savedSearch)
-			fetchData()
-		}
+		if (queryState) setQuery(queryState)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	return (
@@ -76,9 +59,17 @@ const MainSearch = () => {
 					</Form>
 				</Col>
 				<Col xs={10} className='mx-auto mb-5'>
-					{jobs.map(jobData => (
-						<Job key={jobData._id} data={jobData} />
-					))}
+					{isLoading && (
+						<div className='d-flex justify-content-center mt-4'>
+							<Spinner animation='border' variant='primary' className='mx-auto' />
+						</div>
+					)}
+					{error && (
+						<Alert variant='danger' className='mt-4'>
+							{error}
+						</Alert>
+					)}
+					{!isLoading && !error && jobs.map(jobData => <Job key={jobData._id} data={jobData} />)}
 				</Col>
 			</Row>
 		</Container>

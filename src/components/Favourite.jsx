@@ -3,6 +3,7 @@ import { Row, Col, Button } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux'
 import { IoStarOutline, IoStar } from 'react-icons/io5'
 import { Link } from 'react-router-dom'
+import { addFavouriteAction, removeFavouriteAction } from '../redux/actions'
 
 const Favourite = ({ data }) => {
 	const favourites = useSelector(state => state.favourites.items)
@@ -16,9 +17,7 @@ const Favourite = ({ data }) => {
 					variant={isFavourite ? 'warning' : 'outline-warning'}
 					className='me-3'
 					onClick={() => {
-						isFavourite
-							? dispatch({ type: 'REMOVE_FAVOURITE', payload: data })
-							: dispatch({ type: 'ADD_FAVOURITE', payload: data })
+						isFavourite ? dispatch(removeFavouriteAction(data)) : dispatch(addFavouriteAction(data))
 					}}
 				>
 					{isFavourite ? <IoStar /> : <IoStarOutline />}
